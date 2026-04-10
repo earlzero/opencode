@@ -1,9 +1,11 @@
 import z from "zod"
+import { Effect } from "effect"
 import { Tool } from "./tool"
 import { EditTool } from "./edit"
 import DESCRIPTION from "./multiedit.txt"
 import path from "path"
 import { Instance } from "../project/instance"
+import { LSP } from "../lsp"
 
 export const MultiEditTool = Tool.define("multiedit", {
   description: DESCRIPTION,
@@ -21,7 +23,10 @@ export const MultiEditTool = Tool.define("multiedit", {
       .describe("Array of edit operations to perform sequentially on the file"),
   }),
   async execute(params, ctx) {
-    const tool = await EditTool.init()
+    const info = await Effect.gen(function* () {
+      return yield* EditTool
+    }).pipe(Effect.provide(LSP.defaultLayer), Effect.runPromise)
+    const tool = await info.init()
     const results = []
     for (const [, edit] of params.edits.entries()) {
       const result = await tool.execute(
