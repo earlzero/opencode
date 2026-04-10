@@ -110,6 +110,7 @@ export namespace ToolRegistry {
       const bash = yield* BashTool
       const codesearch = yield* CodeSearchTool
       const globtool = yield* GlobTool
+      const greptool = yield* GrepTool
 
       const state = yield* InstanceState.make<State>(
         Effect.fn("ToolRegistry.state")(function* (ctx) {
@@ -171,7 +172,7 @@ export namespace ToolRegistry {
             bash: Tool.init(bash),
             read: Tool.init(read),
             glob: Tool.init(globtool),
-            grep: Tool.init(GrepTool),
+            grep: Tool.init(greptool),
             edit: Tool.init(EditTool),
             write: Tool.init(WriteTool),
             task: Tool.init(task),
